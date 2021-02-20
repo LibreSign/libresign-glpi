@@ -1,0 +1,44 @@
+<root>
+   <name>LibreSign</name>
+   <key>libresign</key>
+   <state>beta</state>
+   <logo>https://raw.githubusercontent.com/LyseonTech/libresign-glpi/master/docs/logo.png</logo>
+   <description>
+      <short>
+         <en>LibreSign GLPI plugin.</en>
+         <pt>Plugin GLPI LibreSign</pt>
+      </short>
+      <long>
+         <en>Validate tickets using LibreSign's signature flow. Tickets will be approved after being digitally signed in LibreSign.</en>
+         <pt>Faça a validação dos tickets utilizando fluxo de assinatura do LibreSign. Os tickets serão aprovados após serem assinados digitalmente no LibreSign.</pt>
+      </long>
+   </description>
+   <homepage>https://github.com/LyseonTech/libresign-glpi</homepage>
+   <download>https://github.com/LyseonTech/libresign-glpi/releases</download>
+   <issues>https://github.com/LyseonTech/libresign-glpi/issues</issues>
+   <readme>https://github.com/LyseonTech/libresign-glpi/blob/master/README.md</readme>
+   <authors>
+      <author>LyseonTech</author>
+   </authors>
+   <versions>
+      <version>
+         <num>0.0.1</num>
+         <compatibility>9.4</compatibility>
+         <compatibility>9.3</compatibility>
+         <compatibility>9.2</compatibility>
+      </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>pt_BR</lang>
+   </langs>
+   <license>GPL V3+</license>
+   <tags>
+      <en>
+         <tag>libresign</tag>
+      </en>
+      <pt>
+         <tag>libresign</tag>
+      </pt>
+   </tags>
+</root>
