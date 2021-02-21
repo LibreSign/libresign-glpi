@@ -5,7 +5,7 @@ include ("../../../inc/includes.php");
 // No autoload when plugin is not activated
 require_once('../inc/config.class.php');
 
-$config = new PluginPdfConfig();
+$config = new PluginLibreSignConfig();
 if (isset($_POST["update"])) {
    $config->check($_POST['id'], UPDATE);
 
