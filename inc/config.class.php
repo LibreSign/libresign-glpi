@@ -8,7 +8,7 @@ class PluginLibreSignConfig extends CommonDBTM {
 
       if (!$withtemplate) {
          if ($item->getType() == 'Config') {
-            return __('Libresign plugin');
+            return __('Libresign');
          }
       }
       return '';
@@ -31,7 +31,7 @@ class PluginLibreSignConfig extends CommonDBTM {
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL('Config')."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . __('LibreSign setup') . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Global settings') . "</th></tr>";
       echo "<td >" . __('My boolean choice :') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='hidden' name='config_class' value='".__CLASS__."'>";
