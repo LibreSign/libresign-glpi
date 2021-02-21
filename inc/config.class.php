@@ -1,8 +1,30 @@
 <?php
 
-class PluginLibreSignConfig extends CommonDBTM {
+class PluginLibresignConfig extends CommonDBTM {
+   static private $_instance = NULL;
+   static $rightname         = 'config';
 
-   static protected $notable = true;
+   static function canCreate() {
+      return Session::haveRight('config', UPDATE);
+   }
+
+   static function canView() {
+      return Session::haveRight('config', READ);
+   }
+
+   /**
+    * Singleton for the unique config record
+    */
+    static function getInstance() {
+
+      if (!isset(self::$_instance)) {
+         self::$_instance = new self();
+         if (!self::$_instance->getFromDB(1)) {
+            self::$_instance->getEmpty();
+         }
+      }
+      return self::$_instance;
+   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -14,38 +36,28 @@ class PluginLibreSignConfig extends CommonDBTM {
       return '';
    }
 
-   static function configUpdate($input) {
-      $input['configuration'] = 1 - $input['configuration'];
-      return $input;
-   }
-
    function showConfigForm() {
-      global $CFG_GLPI;
+      $config = self::getInstance();
 
-      if (!Session::haveRight("config", UPDATE)) {
-         return false;
-      }
-
-      $my_config = Config::getConfigurationValues('plugin:LibreSign');
-
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL('Config')."\" method='post'>";
-      echo "<div class='center' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . __('Global settings') . "</th></tr>";
-      echo "<td >" . __('My boolean choice :') . "</td>";
-      echo "<td colspan='3'>";
-      echo "<input type='hidden' name='config_class' value='".__CLASS__."'>";
-      echo "<input type='hidden' name='config_context' value='plugin:LibreSign'>";
-      Dropdown::showYesNo("configuration", $my_config['configuration']);
-      echo "</td></tr>";
+      $config->showFormHeader();
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
-      echo "</td></tr>";
+      echo "<td><label for='nextcloud_url'>" . __('URL of the API') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='nextcloud_url' id='nextcloud_url' size='80' value='".$config->fields["nextcloud_url"]."'></td>";
+      echo "</tr>";
 
-      echo "</table></div>";
-      Html::closeForm();
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='username'>" . __('Username') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='username' id='username' size='80' value='".$config->fields["username"]."'></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='password'>" . __('Password') . "</label></td>";
+      echo "<td colspan='3'><input type='password' name='password' id='password' size='80' value='".$config->fields["password"]."'></td>";
+      echo "</tr>";
+
+      $config->showFormButtons(['candel'=>false]);
+      return false;
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {

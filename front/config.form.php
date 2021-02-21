@@ -5,7 +5,7 @@ include ("../../../inc/includes.php");
 // No autoload when plugin is not activated
 require_once('../inc/config.class.php');
 
-$config = new PluginLibreSignConfig();
+$config = new PluginLibresignConfig();
 if (isset($_POST["update"])) {
    $config->check($_POST['id'], UPDATE);
 
@@ -14,4 +14,4 @@ if (isset($_POST["update"])) {
    Html::back();
 }
 Html::redirect($CFG_GLPI["root_doc"]."/front/config.form.php?forcetab=".
-               urlencode('PluginLibreSignConfig$1'));
+               urlencode('PluginLibresignConfig$1'));
