@@ -34,6 +34,14 @@
 function plugin_libresign_install() {
    global $DB;
 
+   $config = new Config();
+   $config->setConfigurationValues('plugin:LibreSign', [
+      'nextcloud_url' => null,
+      'username' => null,
+      'password' => null,
+      'nextcloud_url' => null,
+   ]);
+
    if (!$DB->tableExists("glpi_plugin_libresign_files")) {
       $query = "CREATE TABLE glpi.glpi_plugin_libresign_files (
                   ticket_id int(11) NOT NULL,
@@ -57,6 +65,10 @@ function plugin_libresign_install() {
  */
 function plugin_libresign_uninstall() {
    global $DB;
+
+   $config = new Config();
+   $config->delete(['context' => 'plugin:LibreSign']);
+
    if ($DB->tableExists("glpi_plugin_libresign_files")) {
       $query = "DROP TABLE `glpi_plugin_libresign_files`";
       $DB->query($query) or die("error deleting glpi_plugin_libresign_files");
