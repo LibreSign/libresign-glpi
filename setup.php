@@ -40,8 +40,16 @@ function plugin_init_libresign() {
    $PLUGIN_HOOKS['csrf_compliant']['libresign'] = true;
 
    Plugin::registerClass('PluginLibreSignConfig', ['addtabon' => 'Config']);
+   $PLUGIN_HOOKS['config_page']['libresign'] = 'front/config.form.php';
 
    include_once(Plugin::getPhpDir('libresign')."/inc/config.class.php");
+
+   $plugin = new Plugin();
+   if ($plugin->isActivated("datainjection")) {
+      $PLUGIN_HOOKS['menu_entry']['libresign'] = 'front/preference.form.php';
+   } elseif ($plugin->isActivated("geststock")) {
+      $PLUGIN_HOOKS['menu_entry']['libresign'] = 'front/preference.form.php';
+   }
 }
 
 
