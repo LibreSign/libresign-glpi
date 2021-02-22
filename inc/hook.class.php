@@ -47,7 +47,8 @@ class PluginLibresignHook extends CommonDBTM
                     'display_name' => $displayName,
                     'email' => $email
                 ]
-            ]
+            ],
+            'callback' => Plugin::getWebDir('libresign', true, true) . '/front/apirest.php'
         ];
         include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
         $client = new PluginLibresignHttpclient();
