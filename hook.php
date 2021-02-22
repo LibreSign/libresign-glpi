@@ -64,7 +64,7 @@ function plugin_libresign_install() {
 
       $query = "INSERT INTO `glpi_plugin_libresign_configs`
          (id, nextcloud_url, username, `password`, default_display_name, date_mod)
-         VALUES (1, null, null, null, null)";
+         VALUES (1, null, null, 'firstname', null)";
       $DB->queryOrDie($query, 'Error during update glpi_plugin_pdf_configs'.
                  "<br>" . $DB->error());
    }
