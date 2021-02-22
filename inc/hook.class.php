@@ -34,13 +34,13 @@ class PluginLibresignHook extends CommonDBTM
         include_once(Plugin::getPhpDir('libresign')."/inc/config.class.php");
         $config = new PluginLibresignConfig();
         $config->getFromDB(1);
-        $displayName = $user->getField($config->fields["default_display_name"]);
+        $displayName = $user->getField($config->fields['default_display_name']);
         if (!$displayName) {
             $ticket->input = null;
             Session::addMessageAfterRedirect(
                 sprintf(
                    __('The selected user (%s) has no valid %s. The request has not been created, without %s.'),
-                   $user->getField('name'), $displayName, $displayName
+                   $user->getField('name'), $config->fields['default_display_name'], $config->fields['default_display_name']
                 ),
                 false,
                 ERROR
@@ -48,7 +48,7 @@ class PluginLibresignHook extends CommonDBTM
              return;
         }
         $options = [
-            'name' => __('Accept'),
+            'name' => __($config->fields['default_filename']?:'Accept'),
             'users' => [
                 [
                     'display_name' => $displayName,

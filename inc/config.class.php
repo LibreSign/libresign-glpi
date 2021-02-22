@@ -61,6 +61,11 @@ class PluginLibresignConfig extends CommonDBTM {
       echo "<td colspan='3'><input type='text' name='default_display_name' id='default_display_name' size='80' value='".$config->fields["default_display_name"]."'></td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='default_filename'>" . __('Default filename to sign') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='default_filename' id='default_filename' size='80' value='".$config->fields["default_filename"]."'></td>";
+      echo "</tr>";
+
       $config->showFormButtons(['candel'=>false]);
       return false;
    }
