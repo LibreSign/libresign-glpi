@@ -54,6 +54,7 @@ function plugin_libresign_install() {
                   `nextcloud_url`  VARCHAR(255) NULL,
                   `username`  VARCHAR(255) NULL,
                   `password`  VARCHAR(255) NULL,
+                  `default_display_name`  VARCHAR(255) NULL,
                   `date_mod` datetime default NULL,
                   PRIMARY KEY  (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -62,7 +63,7 @@ function plugin_libresign_install() {
 
 
       $query = "INSERT INTO `glpi_plugin_libresign_configs`
-         (id, nextcloud_url, username, `password`, date_mod)
+         (id, nextcloud_url, username, `password`, default_display_name, date_mod)
          VALUES (1, null, null, null, null)";
       $DB->queryOrDie($query, 'Error during update glpi_plugin_pdf_configs'.
                  "<br>" . $DB->error());

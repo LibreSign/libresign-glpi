@@ -56,6 +56,11 @@ class PluginLibresignConfig extends CommonDBTM {
       echo "<td colspan='3'><input type='password' name='password' id='password' size='80' value='".$config->fields["password"]."'></td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='default_display_name'>" . __('Default display name field') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='default_display_name' id='default_display_name' size='80' value='".$config->fields["default_display_name"]."'></td>";
+      echo "</tr>";
+
       $config->showFormButtons(['candel'=>false]);
       return false;
    }
