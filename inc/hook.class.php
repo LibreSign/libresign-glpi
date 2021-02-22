@@ -65,15 +65,16 @@ class PluginLibresignHook extends CommonDBTM
             return;
         }
         // POST
-        $pdf = self::getPdf($ticket);
         $options['file'] = [
-            'base64' => base64_encode('')
+            'base64' => base64_encode(self::getPdf($ticket))
         ];
         $client->request($config->fields["nextcloud_url"], ['json' => $options], 'POST');
     }
 
     private static function getPdf(TicketValidation $ticket)
     {
-
+        global $PLUGIN_HOOKS;
+        $pdf = new $PLUGIN_HOOKS['plugin_pdf']['Ticket']($ticket);
+        return $pdf->generatePDF([], [], 0, false);
     }
 }
