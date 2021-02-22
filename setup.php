@@ -50,6 +50,13 @@ function plugin_init_libresign() {
    } elseif ($plugin->isActivated("geststock")) {
       $PLUGIN_HOOKS['menu_entry']['libresign'] = 'front/preference.form.php';
    }
+
+   $PLUGIN_HOOKS['pre_item_add']['libresign'] = [
+      'TicketValidation' => [
+         'PluginLibresignHook',
+         'preItemAdd'
+      ]
+   ];
 }
 
 
