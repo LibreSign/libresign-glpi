@@ -1,6 +1,7 @@
 <?php
 
 use Glpi\Marketplace\Api\Plugins;
+use GuzzleHttp\Exception\RequestException;
 
 class PluginLibresignHook extends CommonDBTM
 {
@@ -23,15 +24,7 @@ class PluginLibresignHook extends CommonDBTM
              return;
         }
 
-        $iterator = $DB->request([
-            'SELECT' => ['file_uuid'],
-            'FROM' => 'glpi_plugin_libresign_files',
-            'WHERE' => [
-                'ticket_id' => $ticket->input['users_id_validate']
-            ],
-            'LIMIT' => 1
-        ]);
-        include_once(Plugin::getPhpDir('libresign')."/inc/config.class.php");
+        include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
         $config = new PluginLibresignConfig();
         $config->getFromDB(1);
         $displayName = $user->getField($config->fields['default_display_name']);
@@ -56,19 +49,60 @@ class PluginLibresignHook extends CommonDBTM
                 ]
             ]
         ];
-        $client = new Plugins();
+        include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
+        $client = new PluginLibresignHttpclient();
+        $iterator = $DB->request([
+            'SELECT' => ['file_uuid'],
+            'FROM' => 'glpi_plugin_libresign_files',
+            'WHERE' => [
+                'ticket_id' => $ticket->input['users_id_validate']
+            ]
+        ]);
         if (count($iterator)) {
             // PATCH
             $row = $iterator->next();
             $options['uuid'] = $row['file_uuid'];
-            $client->request($config->fields["nextcloud_url"], ['json' => $options], 'PATCH');
+            $client->request($config->fields['nextcloud_url'], [
+                'json' => $options,
+                'auth' => [$config->fields['username'], $config->fields['password']]
+            ], 'PATCH');
             return;
         }
         // POST
         $options['file'] = [
             'base64' => base64_encode(self::getPdf($ticket))
         ];
-        $client->request($config->fields["nextcloud_url"], ['json' => $options], 'POST');
+        try {
+            $response = $client->request('POST',$config->fields['nextcloud_url'], [
+                'json' => $options,
+                'auth' => [$config->fields['username'], $config->fields['password']]
+            ]);
+            $json = $response->getBody()->getContents();
+            if (!$json) {
+                throw new \Exception('Invalid response from LibreSign');
+            }
+            $json = json_decode($json);
+            if (!$json) {
+                throw new \Exception('Invalid JSON from LibreSign');
+            }
+            $DB->insert('glpi_plugin_libresign_files', [
+                'file_uuid' => $json->data->uuid,
+                'user_id' => $ticket->input['users_id_validate'],
+                'ticket_id' => $ticket->input['tickets_id'],
+                'request_date' => date('Y-m-d H:i:s')
+            ]);
+        } catch (\Exception $e) {
+            $ticket->input = null;
+            Session::addMessageAfterRedirect(
+                sprintf(
+                   __('Failure on send file to sign in LibreSign. Error: %s.'),
+                   $e->getMessage()
+                ),
+                false,
+                ERROR
+             );
+             return;
+        }
     }
 
     private static function getPdf(TicketValidation $ticket)
