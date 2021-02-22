@@ -2,6 +2,10 @@
 
 Validate tickets with LibreSign
 
+## Documentation
+
+Read [Docs](docs/README.md)
+
 ## Contributing
 
 * Open a ticket for each bug/feature so it can be discussed
