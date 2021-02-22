@@ -105,10 +105,11 @@ class PluginLibresignHook extends CommonDBTM
         }
     }
 
-    private static function getPdf(TicketValidation $ticket)
+    private static function getPdf(TicketValidation $ticketValidation)
     {
         global $PLUGIN_HOOKS;
+        $ticket = new Ticket();
         $pdf = new $PLUGIN_HOOKS['plugin_pdf']['Ticket']($ticket);
-        return $pdf->generatePDF([], [], 0, false);
+        return $pdf->generatePDF([$ticketValidation->input['tickets_id']], ['Ticket$main'], 0, false);
     }
 }
