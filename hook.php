@@ -74,7 +74,7 @@ function plugin_libresign_install() {
             'default_filename' => __('Accept'),
             'default_comment' => __('Digitally signed on LibreSign'),
             'system_user_id' => 0,
-            'date_mod' => null,
+            'date_mod' => null
          ],
          'Error during update glpi_plugin_pdf_configs<br>' . $DB->error()
       );
