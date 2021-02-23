@@ -1,8 +1,5 @@
 <?php
 
-use Glpi\Marketplace\Api\Plugins;
-use GuzzleHttp\Exception\RequestException;
-
 class PluginLibresignHook extends CommonDBTM
 {
     public static function preItemAdd(TicketValidation $ticket)
