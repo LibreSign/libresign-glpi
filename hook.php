@@ -64,12 +64,20 @@ function plugin_libresign_install() {
       $DB->queryOrDie($query, 'Error in creating glpi_plugin_libresign_configs'.
                               "<br>".$DB->error());
 
-
-      $query = "INSERT INTO `glpi_plugin_libresign_configs` " .
-         "(id, nextcloud_url, username, `password`, default_display_name, default_filename, default_comment, date_mod) " .
-         "VALUES (1, '\$DOMAIN/apps/libresign/api/0.1/webhook/register', null, null, 'firstname', '".__('Accept')."', '".__('Digitally signed on LibreSign')."', null, 0)";
-      $DB->queryOrDie($query, 'Error during update glpi_plugin_pdf_configs'.
-                 "<br>" . $DB->error());
+      $DB->insertOrDie(
+         'glpi_plugin_libresign_configs', [
+            'id' => 1,
+            'nextcloud_url' => '$DOMAIN/apps/libresign/api/0.1/webhook/register',
+            'username' => null,
+            'password' => null,
+            'default_display_name' => 'firstname',
+            'default_filename' => __('Accept'),
+            'default_comment' => __('Digitally signed on LibreSign'),
+            'system_user_id' => 0,
+            'date_mod' => null,
+         ],
+         'Error during update glpi_plugin_pdf_configs<br>' . $DB->error()
+      );
    }
    return true;
 }
