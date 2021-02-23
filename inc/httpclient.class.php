@@ -1,7 +1,6 @@
 <?php
 
 use Glpi\Marketplace\Api\Plugins;
-use GuzzleHttp\Exception\RequestException;
 
 class PluginLibresignHttpclient extends Plugins
 {
