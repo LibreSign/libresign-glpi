@@ -13,7 +13,7 @@ class PluginLibresignHook extends CommonDBTM
             include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
             $config = new PluginLibresignConfig();
             $config->getFromDB(1);
-            $displayName = self::getDisplayName();
+            $displayName = self::getDisplayName($config, $user);
             $options = [
                 'name' => __($config->fields['default_filename']?:'Accept'),
                 'users' => [
@@ -24,7 +24,6 @@ class PluginLibresignHook extends CommonDBTM
                 ],
                 'callback' => Plugin::getWebDir('libresign', true, true) . '/front/apirest.php'
             ];
-            include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
             $iterator = $DB->request([
                 'SELECT' => ['file_uuid', 'user_id', 'response_date'],
                 'FROM' => 'glpi_plugin_libresign_files',
@@ -84,7 +83,7 @@ class PluginLibresignHook extends CommonDBTM
         return $email;
     }
 
-    private static function getDisplayName(PluginLibresignConfig $config)
+    private static function getDisplayName(PluginLibresignConfig $config, User $user)
     {
         $displayName = $user->getField($config->fields['default_display_name']);
         if (!$displayName) {
@@ -93,11 +92,12 @@ class PluginLibresignHook extends CommonDBTM
                 $user->getField('name'), $config->fields['default_display_name'], $config->fields['default_display_name']
             ));
         }
-        return $displayName
+        return $displayName;
     }
 
     private static function requestSign(string $method, PluginLibresignConfig $config, array $options)
     {
+        include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
         $client = new PluginLibresignHttpclient();
         $response = $client->request($method, $config->fields['nextcloud_url'], [
             'json' => $options,
