@@ -71,6 +71,11 @@ class PluginLibresignConfig extends CommonDBTM {
       echo "<td colspan='3'><input type='text' name='default_comment' id='default_comment' size='80' value='".$config->fields["default_comment"]."'></td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='system_user_id'>" . __('User ID that will be used to attach the signed file to the ticket.') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='system_user_id' id='system_user_id' size='80' value='".$config->fields["system_user_id"]."'></td>";
+      echo "</tr>";
+
       $config->showFormButtons(['candel'=>false]);
       return false;
    }

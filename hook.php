@@ -57,6 +57,7 @@ function plugin_libresign_install() {
                   `default_display_name`  VARCHAR(255) NULL,
                   `default_filename`  VARCHAR(255) NULL,
                   `default_comment`  TEXT NULL,
+                  `system_user_id` int(11) NOT NULL DEFAULT 0,
                   `date_mod` datetime default NULL,
                   PRIMARY KEY  (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -66,7 +67,7 @@ function plugin_libresign_install() {
 
       $query = "INSERT INTO `glpi_plugin_libresign_configs` " .
          "(id, nextcloud_url, username, `password`, default_display_name, default_filename, default_comment, date_mod) " .
-         "VALUES (1, '\$DOMAIN/apps/libresign/api/0.1/webhook/register', null, null, 'firstname', '".__('Accept')."', '".__('Digitally signed on LibreSign')."', null)";
+         "VALUES (1, '\$DOMAIN/apps/libresign/api/0.1/webhook/register', null, null, 'firstname', '".__('Accept')."', '".__('Digitally signed on LibreSign')."', null, 0)";
       $DB->queryOrDie($query, 'Error during update glpi_plugin_pdf_configs'.
                  "<br>" . $DB->error());
    }
