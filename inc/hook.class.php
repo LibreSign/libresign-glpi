@@ -2,9 +2,76 @@
 
 class PluginLibresignHook extends CommonDBTM
 {
-    public static function preItemAdd(TicketValidation $ticket)
+    public static function preItemPurge(TicketValidation $ticket) {
+        try {
+            $iterator = self::getSignRequests([
+                'ticket_id' => $ticket->input['tickets_id'],
+                'user_id' => $ticket->input['users_id_validate']
+            ]);
+            if (!count($iterator)) {
+                throw new Exception(__('No signer found'));
+            }
+            $row = $iterator->next();
+            self::requestDeleteSigner($row['file_uuid'], $row['email']);
+            self::deleteRelation($row['file_uuid'], $ticket);
+        } catch (\Exception $e) {
+            $ticket->input = null;
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('Failure on send file to sign in LibreSign. Error: %s.'),
+                    $e->getMessage()
+                ),
+                false,
+                ERROR
+            );
+            return;
+        }
+    }
+
+    private static function requestDeleteSigner(string $uuid, string $email)
+    {
+        include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
+        $config = new PluginLibresignConfig();
+        $config->getFromDB(1);
+
+        include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
+        $client = new PluginLibresignHttpclient();
+        $client->request('DELETE', $config->fields['nextcloud_url'] . '/signature', [
+            'json' => [
+                'uuid' => $uuid,
+                'users' => [
+                    ['email' => $email]
+                ]
+            ],
+            'auth' => [$config->fields['username'], $config->fields['password']]
+        ]);
+    }
+
+    private static function getSignRequests($filter)
     {
         global $DB;
+        return $DB->request([
+            'SELECT' => [
+                'file.file_uuid',
+                'file.user_id',
+                'file.response_date',
+                UserEmail::getTable() . '.email'
+            ],
+            'FROM' => 'glpi_plugin_libresign_files AS file',
+            'INNER JOIN' => [
+                UserEmail::getTable() => [
+                    'ON' => [
+                        'file' => 'user_id',
+                        UserEmail::getTable() => 'users_id'
+                    ]
+                ]
+            ],
+            'WHERE' => $filter
+        ]);
+    }
+
+    public static function preItemAdd(TicketValidation $ticket)
+    {
         try {
             $user = new User();
             $user->getFromDB($ticket->input['users_id_validate']);
@@ -25,12 +92,8 @@ class PluginLibresignHook extends CommonDBTM
                 ],
                 'callback' => Plugin::getWebDir('libresign', true, true) . '/front/apirest.php'
             ];
-            $iterator = $DB->request([
-                'SELECT' => ['file_uuid', 'user_id', 'response_date'],
-                'FROM' => 'glpi_plugin_libresign_files',
-                'WHERE' => [
-                    'ticket_id' => $ticket->input['tickets_id']
-                ]
+            $iterator = self::getSignRequests([
+                'ticket_id' => $ticket->input['tickets_id']
             ]);
             if (count($iterator)) {
                 while ($iterator->next()) {
@@ -123,6 +186,16 @@ class PluginLibresignHook extends CommonDBTM
             'user_id' => $ticket->input['users_id_validate'],
             'ticket_id' => $ticket->input['tickets_id'],
             'request_date' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    private static function deleteRelation(string $uuid, TicketValidation $ticket)
+    {
+        global $DB;
+        $DB->delete('glpi_plugin_libresign_files', [
+            'file_uuid' => $uuid,
+            'user_id' => $ticket->input['users_id_validate'],
+            'ticket_id' => $ticket->input['tickets_id']
         ]);
     }
 
