@@ -70,9 +70,9 @@ function plugin_version_libresign() {
    return [
       'name'           => 'LibreSign',
       'version'        => PLUGIN_LIBRESIGN_VERSION,
-      'author'         => '<a href="http://www.lyseonech.com">LyseonTech</a>',
+      'author'         => '<a href="https://librecode.coop">LibreCode</a>',
       'license'        => 'GPLv3+',
-      'homepage'       => 'http://www.lyseonech.com',
+      'homepage'       => 'https://librecode.coop',
       'requirements'   => [
          'glpi' => [
             'min' => '9.2',
