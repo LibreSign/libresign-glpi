@@ -56,7 +56,8 @@ function plugin_libresign_install() {
                   `password`  VARCHAR(255) NULL,
                   `default_display_name`  VARCHAR(255) NULL,
                   `default_filename`  VARCHAR(255) NULL,
-                  `default_comment`  TEXT NULL,
+                  `default_request_comment`  TEXT NULL,
+                  `default_accept_comment`  TEXT NULL,
                   `system_user_id` int(11) NOT NULL DEFAULT 0,
                   `date_mod` datetime default NULL,
                   PRIMARY KEY  (`id`)
@@ -72,7 +73,8 @@ function plugin_libresign_install() {
             'password' => null,
             'default_display_name' => 'firstname',
             'default_filename' => __('Accept'),
-            'default_comment' => __('Digitally signed on LibreSign'),
+            'default_request_comment' => __('Validate GLPI Ticket'),
+            'default_accept_comment' => __('Digitally signed on LibreSign'),
             'system_user_id' => 0,
             'date_mod' => null
          ],

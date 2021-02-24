@@ -67,8 +67,13 @@ class PluginLibresignConfig extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='default_comment'>" . __('Standard comment in the signed file to be attached to the ticket.') . "</label></td>";
-      echo "<td colspan='3'><input type='text' name='default_comment' id='default_comment' size='80' value='".$config->fields["default_comment"]."'></td>";
+      echo "<td><label for='default_request_comment'>" . __('Comment sent to the signer of a document..') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='default_request_comment' id='default_request_comment' size='80' value='".$config->fields["default_request_comment"]."'></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='default_accept_comment'>" . __('Comment used when a document is signed.') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='default_accept_comment' id='default_accept_comment' size='80' value='".$config->fields["default_accept_comment"]."'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";

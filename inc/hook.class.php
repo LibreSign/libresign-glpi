@@ -19,7 +19,8 @@ class PluginLibresignHook extends CommonDBTM
                 'users' => [
                     [
                         'display_name' => $displayName,
-                        'email' => $email
+                        'email' => $email,
+                        'description' => $ticket->input['comment_submission']?:$config->fields['default_request_comment']
                     ]
                 ],
                 'callback' => Plugin::getWebDir('libresign', true, true) . '/front/apirest.php'
@@ -76,7 +77,7 @@ class PluginLibresignHook extends CommonDBTM
         $email = $user->getDefaultEmail();
         if (!$email) {
             throw new Exception(sprintf(
-                __('The selected user (%s) has no valid email address. The request has not been created, without email confirmation.'),
+                __('The selected user (%s) has no valid email address. The request has not been created.'),
                 $user->getField('name')
             ));
         }

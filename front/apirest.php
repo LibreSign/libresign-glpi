@@ -53,7 +53,7 @@ $data = [
     'tickets_id' => $signer['ticket_id'],
     'filename' => $_FILES['file']['name'],
     'mime' => 'application/pdf',
-    'comment' => $config->fields['default_comment']
+    'comment' => $config->fields['default_accept_comment']
 ];
 $doc->check(-1, CREATE, $data);
 
