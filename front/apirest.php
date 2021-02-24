@@ -76,7 +76,7 @@ do {
     $validation->update([
         'id' => $signer['validation_id'],
         'users_id_validate' => $signer['user_id'],
-        'comment_validation' => $config->fields['default_comment'],
+        'comment_validation' => $config->fields['default_accept_comment'],
         'validation_date' => date('Y-m-d H:i:s'),
         'status' => CommonITILValidation::ACCEPTED
     ]);
