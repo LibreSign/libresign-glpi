@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Exception\BadResponseException;
+
 class PluginLibresignHook extends CommonDBTM
 {
     public static function itemUpdate(TicketValidation $ticket)
@@ -64,8 +66,8 @@ class PluginLibresignHook extends CommonDBTM
     {
         try {
             $iterator = self::getSignRequests([
-                'ticket_id' => $ticket->input['tickets_id'],
-                'user_id' => $ticket->input['users_id_validate']
+                'ticket_id' => $ticket->fields['tickets_id'],
+                'user_id' => $ticket->fields['users_id_validate']
             ]);
             if (!count($iterator)) {
                 throw new Exception(__('No signer found'));
@@ -95,15 +97,24 @@ class PluginLibresignHook extends CommonDBTM
 
         include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
         $client = new PluginLibresignHttpclient();
-        $client->request('DELETE', $config->fields['nextcloud_url'] . '/signature', [
-            'json' => [
-                'uuid' => $uuid,
-                'users' => [
-                    ['email' => $email]
-                ]
-            ],
-            'auth' => [$config->fields['username'], $config->fields['password']]
-        ]);
+        try {
+            $client->delete($config->fields['nextcloud_url'] . '/signature', [
+                'json' => [
+                    'uuid' => $uuid,
+                    'users' => [
+                        ['email' => $email]
+                    ]
+                ],
+                'auth' => [$config->fields['username'], $config->fields['password']]
+            ]);
+        } catch (BadResponseException $e) {
+            $return = $e->getResponse()->getBody()->getContents();
+            $json = json_decode($return);
+            if ($json && $json->message) {
+                throw new Exception(__($json->message));
+            }
+            throw new Exception($return);
+        }
     }
 
     private static function getSignRequests($filter)

@@ -4,8 +4,8 @@ use Glpi\Marketplace\Api\Plugins;
 
 class PluginLibresignHttpclient extends Plugins
 {
-    public function request($method, $endpoint, $options)
+    public function __call($method, $args)
     {
-        return $this->httpClient->request($method, $endpoint, $options);
+        return call_user_func_array([$this->httpClient, $method], $args);
     }
 }
