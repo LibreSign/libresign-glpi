@@ -58,6 +58,13 @@ function plugin_init_libresign() {
       ]
    ];
 
+   $PLUGIN_HOOKS['item_update']['libresign'] = [
+      'TicketValidation' => [
+         'PluginLibresignHook',
+         'itemUpdate'
+      ]
+   ];
+
    $PLUGIN_HOOKS['pre_item_purge']['libresign'] = [
       'TicketValidation' => [
          'PluginLibresignHook',

@@ -2,7 +2,66 @@
 
 class PluginLibresignHook extends CommonDBTM
 {
-    public static function preItemPurge(TicketValidation $ticket) {
+    public static function itemUpdate(TicketValidation $ticket)
+    {
+        try {
+            $iterator = self::getSignRequests([
+                'ticket_id' => $ticket->input['tickets_id'],
+                'user_id' => $ticket->input['users_id_validate']
+            ]);
+            if (!count($iterator)) {
+                throw new Exception(__('No signer found'));
+            }
+            $row = $iterator->next();
+            $signer['email'] = $row['email'];
+            foreach($ticket->updates as $field) {
+                switch ($field) {
+                    case 'comment_submission':
+                        $signer['description'] = $ticket->input[$field];
+                        break;
+                }
+            }
+            if (count($signer) > 1) {
+                self::requestUpdateSigner(
+                    $row['file_uuid'],
+                    $signer
+                );
+            }
+        } catch (\Exception $e) {
+            $ticket->input = null;
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('Failure on send update sign in LibreSign. Error: %s.'),
+                    $e->getMessage()
+                ),
+                false,
+                ERROR
+            );
+            return;
+        }
+    }
+
+    private static function requestUpdateSigner(string $uuid, array $signer)
+    {
+        include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
+        $config = new PluginLibresignConfig();
+        $config->getFromDB(1);
+
+        include_once(Plugin::getPhpDir('libresign').'/inc/httpclient.class.php');
+        $client = new PluginLibresignHttpclient();
+        $client->request('PATCH', $config->fields['nextcloud_url'], [
+            'json' => [
+                'uuid' => $uuid,
+                'users' => [
+                    $signer
+                ]
+            ],
+            'auth' => [$config->fields['username'], $config->fields['password']]
+        ]);
+    }
+
+    public static function preItemPurge(TicketValidation $ticket)
+    {
         try {
             $iterator = self::getSignRequests([
                 'ticket_id' => $ticket->input['tickets_id'],
@@ -18,7 +77,7 @@ class PluginLibresignHook extends CommonDBTM
             $ticket->input = null;
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('Failure on send file to sign in LibreSign. Error: %s.'),
+                    __('Failure on send delete sign in LibreSign. Error: %s.'),
                     $e->getMessage()
                 ),
                 false,
