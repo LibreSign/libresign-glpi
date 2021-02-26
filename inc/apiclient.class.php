@@ -15,7 +15,7 @@ class LibresignAPIClient extends APIRest
         $CFG_GLPI['enable_api'] = true;
         parent::initApi();
 
-        include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
+        include_once(Plugin::getPhpDir('libresign') . '/inc/config.class.php');
         $this->config = new PluginLibresignConfig();
         $this->config->getFromDB(1);
 
@@ -34,7 +34,7 @@ class LibresignAPIClient extends APIRest
         }
         $signer = $iterator->next();
 
-        include_once(Plugin::getPhpDir('libresign').'/inc/config.class.php');
+        include_once(Plugin::getPhpDir('libresign') . '/inc/config.class.php');
 
         $doc = new Document();
         $data = [
@@ -53,7 +53,7 @@ class LibresignAPIClient extends APIRest
         $uploadHandler = new GLPIUploadHandler([
             'param_name' => 'file',
             'accept_file_types' => '/\.(pdf)$/i',
-            'upload_dir' => $uploadDir = GLPI_UPLOAD_DIR.'/libresign/files/',
+            'upload_dir' => $uploadDir = GLPI_UPLOAD_DIR . '/libresign/files/',
             'print_response' => false
         ]);
         $response = $uploadHandler->get_response();
@@ -76,7 +76,7 @@ class LibresignAPIClient extends APIRest
                 'validation_date' => date('Y-m-d H:i:s'),
                 'status' => CommonITILValidation::ACCEPTED
             ]);
-        } while($signer = $this->iterator->next());
+        } while ($signer = $this->iterator->next());
     }
 
     private function getSigners($uuid)
