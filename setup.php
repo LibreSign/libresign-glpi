@@ -121,12 +121,5 @@ function plugin_libresign_check_prerequisites() {
  * @return boolean
  */
 function plugin_libresign_check_config($verbose = false) {
-   if (true) { // Your configuration check
-      return true;
-   }
-
-   if ($verbose) {
-      echo __('Installed / not configured', 'libresign');
-   }
-   return false;
+   return true;
 }
