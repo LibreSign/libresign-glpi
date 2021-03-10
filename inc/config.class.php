@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Exception\ClientException;
+
 class PluginLibresignConfig extends CommonDBTM
 {
     private static $_instance = null;
@@ -13,6 +15,36 @@ class PluginLibresignConfig extends CommonDBTM
     static function canView()
     {
         return Session::haveRight('config', READ);
+    }
+
+    function update(array $input, $history = 1, $options = []) {
+        include_once(Plugin::getPhpDir('libresign') . '/inc/httpclient.class.php');
+        $client = new PluginLibresignHttpclient();
+        try {
+            $url = str_replace('/register', '/me', $input['nextcloud_url']);
+            $response = $client->request('GET', $url, [
+                'auth' => [$input['username'], $input['password']]
+            ]);
+            $json = $response->getBody()->getContents();
+            if (!$json) {
+                throw new \Exception(__('Invalid settings'));
+            }
+        } catch (ClientException $th) {
+            $message = $th->getResponse()->getBody()->getContents();
+            if (preg_match('/<h2>(?<error>.*)<\/h2>/', $message, $matches)) {
+                $message = $matches['error'];
+            }
+            if (json_decode($message)) {
+                $message = json_decode($message)->message;
+            }
+            Session::addMessageAfterRedirect(
+                __($message),
+                false,
+                ERROR
+            );
+            return;
+        }
+        parent::update($input, $history, $options);
     }
 
    /**

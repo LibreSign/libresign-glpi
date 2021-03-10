@@ -146,6 +146,9 @@ class PluginLibresignHook extends CommonDBTM
             $user = new User();
             $user->getFromDB($ticket->input['users_id_validate']);
             $email = self::getUserEmail($user);
+            if (!isset($ticket->input['validatortype'])) {
+                return;
+            }
 
             include_once(Plugin::getPhpDir('libresign') . '/inc/config.class.php');
             $config = new PluginLibresignConfig();
