@@ -1,6 +1,6 @@
 <?php
 
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 
 class PluginLibresignConfig extends CommonDBTM
 {
@@ -29,13 +29,18 @@ class PluginLibresignConfig extends CommonDBTM
             if (!$json) {
                 throw new \Exception(__('Invalid settings'));
             }
-        } catch (ClientException $th) {
-            $message = $th->getResponse()->getBody()->getContents();
-            if (preg_match('/<h2>(?<error>.*)<\/h2>/', $message, $matches)) {
-                $message = $matches['error'];
+        } catch (RequestException $th) {
+            if ($th->getResponse()) {
+                $message = $th->getResponse()->getBody()->getContents();
+                if (preg_match('/<h2>(?<error>.*)<\/h2>/', $message, $matches)) {
+                    $message = $matches['error'];
+                }
+                if (json_decode($message)) {
+                    $message = json_decode($message)->message;
+                }
             }
-            if (json_decode($message)) {
-                $message = json_decode($message)->message;
+            if (!$message) {
+                $message = $th->getMessage();
             }
             Session::addMessageAfterRedirect(
                 __($message),
