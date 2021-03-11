@@ -143,12 +143,12 @@ class PluginLibresignHook extends CommonDBTM
     public static function preItemAdd(TicketValidation $ticket)
     {
         try {
+            if (strpos($_SERVER['REQUEST_URI'], 'ticketvalidation.form.php') === false) {
+                return;
+            }
             $user = new User();
             $user->getFromDB($ticket->input['users_id_validate']);
             $email = self::getUserEmail($user);
-            if (!isset($ticket->input['validatortype'])) {
-                return;
-            }
 
             include_once(Plugin::getPhpDir('libresign') . '/inc/config.class.php');
             $config = new PluginLibresignConfig();
