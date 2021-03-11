@@ -34,8 +34,6 @@ class LibresignAPIClient extends APIRest
         }
         $signer = $iterator->next();
 
-        include_once(Plugin::getPhpDir('libresign') . '/inc/config.class.php');
-
         $doc = new Document();
         $data = [
             'itemtype' => 'Ticket',
@@ -43,9 +41,9 @@ class LibresignAPIClient extends APIRest
             'tickets_id' => $signer['ticket_id'],
             'filename' => $filename,
             'mime' => 'application/pdf',
-            'comment' => $config->fields['default_accept_comment']
+            'comment' => $this->config->fields['default_accept_comment']
         ];
-        $doc->check(-1, CREATE, $data);
+        // $doc->check(-1, CREATE, $data);
 
         // Prefix with random value
         $filename = uniqid('', true) . $filename;
