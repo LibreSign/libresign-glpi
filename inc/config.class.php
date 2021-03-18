@@ -5,19 +5,20 @@ use GuzzleHttp\Exception\RequestException;
 class PluginLibresignConfig extends CommonDBTM
 {
     private static $_instance = null;
-    static $rightname         = 'config';
+    public static $rightname         = 'config';
 
-    static function canCreate()
+    public static function canCreate()
     {
         return Session::haveRight('config', UPDATE);
     }
 
-    static function canView()
+    public static function canView()
     {
         return Session::haveRight('config', READ);
     }
 
-    function update(array $input, $history = 1, $options = []) {
+    public function update(array $input, $history = 1, $options = [])
+    {
         include_once(Plugin::getPhpDir('libresign') . '/inc/httpclient.class.php');
         $client = new PluginLibresignHttpclient();
         try {
@@ -55,7 +56,7 @@ class PluginLibresignConfig extends CommonDBTM
    /**
     * Singleton for the unique config record
     */
-    static function getInstance()
+    public static function getInstance()
     {
 
         if (!isset(self::$_instance)) {
@@ -67,7 +68,7 @@ class PluginLibresignConfig extends CommonDBTM
         return self::$_instance;
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -78,7 +79,7 @@ class PluginLibresignConfig extends CommonDBTM
         return '';
     }
 
-    function showConfigForm()
+    public function showConfigForm()
     {
         $config = self::getInstance();
 
@@ -128,7 +129,7 @@ class PluginLibresignConfig extends CommonDBTM
         return false;
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == 'Config') {
