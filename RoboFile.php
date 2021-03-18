@@ -11,7 +11,7 @@ class RoboFile extends \Robo\Tasks {
 
    protected $name = "libresign";
    protected $issues = "https://github.com/libresign/libresign-glpi/issues";
-   protected $locale_keywords = "__";
+   protected $locale_keywords = "t_libresign";
 
    protected function getLocaleFiles() {
       $finder = new Finder();

@@ -12,7 +12,7 @@ class PluginLibresignHook extends CommonDBTM
                 'user_id' => $ticket->input['users_id_validate']
             ]);
             if (!count($iterator)) {
-                throw new Exception(__('No signer found'));
+                throw new Exception(t_libresign('No signer found'));
             }
             $row = $iterator->next();
             $signer['email'] = $row['email'];
@@ -33,7 +33,7 @@ class PluginLibresignHook extends CommonDBTM
             $ticket->input = null;
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('Failure on send update sign in LibreSign. Error: %s.'),
+                    t_libresign('Failure on send update sign in LibreSign. Error: %s.'),
                     $e->getMessage()
                 ),
                 false,
@@ -70,7 +70,7 @@ class PluginLibresignHook extends CommonDBTM
                 'user_id' => $ticket->fields['users_id_validate']
             ]);
             if (!count($iterator)) {
-                throw new Exception(__('No signer found'));
+                throw new Exception(t_libresign('No signer found'));
             }
             $row = $iterator->next();
             self::requestDeleteSigner($row['file_uuid'], $row['email']);
@@ -79,7 +79,7 @@ class PluginLibresignHook extends CommonDBTM
             $ticket->input = null;
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('Failure on send delete sign in LibreSign. Error: %s.'),
+                    t_libresign('Failure on send delete sign in LibreSign. Error: %s.'),
                     $e->getMessage()
                 ),
                 false,
@@ -111,7 +111,7 @@ class PluginLibresignHook extends CommonDBTM
             $return = $e->getResponse()->getBody()->getContents();
             $json = json_decode($return);
             if ($json && $json->message) {
-                throw new Exception(__($json->message));
+                throw new Exception(t_libresign($json->message));
             }
             throw new Exception($return);
         }
@@ -155,7 +155,7 @@ class PluginLibresignHook extends CommonDBTM
             $config->getFromDB(1);
             $displayName = self::getDisplayName($config, $user);
             $options = [
-                'name' => __($config->fields['default_filename'] ?: 'Accept'),
+                'name' => t_libresign($config->fields['default_filename'] ?: 'Accept'),
                 'users' => [
                     [
                         'display_name' => $displayName,
@@ -172,14 +172,14 @@ class PluginLibresignHook extends CommonDBTM
                 while ($iterator->next()) {
                     $row = $iterator->current();
                     if ($row['response_date']) {
-                        throw new Exception(__(
+                        throw new Exception(t_libresign(
                             'File already signed by %s, impossible to add another subscriber. ' .
                             'Delete all signers, the signed file and request new signatures.'
                         ));
                     }
                     if ($row['user_id'] == $ticket->input['users_id_validate']) {
                         throw new Exception(sprintf(
-                            __('Signature already requested for %s'),
+                            t_libresign('Signature already requested for %s'),
                             $displayName
                         ));
                     }
@@ -198,7 +198,7 @@ class PluginLibresignHook extends CommonDBTM
             $ticket->input = null;
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('Failure on send file to sign in LibreSign. Error: %s.'),
+                    t_libresign('Failure on send file to sign in LibreSign. Error: %s.'),
                     $e->getMessage()
                 ),
                 false,
@@ -213,7 +213,7 @@ class PluginLibresignHook extends CommonDBTM
         $email = $user->getDefaultEmail();
         if (!$email) {
             throw new Exception(sprintf(
-                __('The selected user (%s) has no valid email address. The request has not been created.'),
+                t_libresign('The selected user (%s) has no valid email address. The request has not been created.'),
                 $user->getField('name')
             ));
         }
@@ -225,7 +225,7 @@ class PluginLibresignHook extends CommonDBTM
         $displayName = $user->getField($config->fields['default_display_name']);
         if (!$displayName) {
             throw new Exception(sprintf(
-                __('The selected user (%s) has no valid %s. The request has not been created, without %s.'),
+                t_libresign('The selected user (%s) has no valid %s. The request has not been created, without %s.'),
                 $user->getField('name'),
                 $config->fields['default_display_name'],
                 $config->fields['default_display_name']

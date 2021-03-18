@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libresign 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/libresign/libresign-glpi/issues\n"
-"POT-Creation-Date: 2021-03-18 12:06+0000\n"
+"POT-Creation-Date: 2021-03-18 12:46+0000\n"
 "PO-Revision-Date: 2021-03-18 11:45+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -58,8 +58,9 @@ msgid "Default filename to sign"
 msgstr "Nome padrão para arquivo a ser assinado"
 
 #: inc/config.class.php:113
+#, fuzzy
 msgid "Comment sent to the signer of a document.."
-msgstr "Comentário enviado a quem assinará o documento.."
+msgstr "Comentário enviado a quem assinará o documento."
 
 #: inc/config.class.php:118
 msgid "Comment used when a document is signed."

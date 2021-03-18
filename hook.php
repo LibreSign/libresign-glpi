@@ -72,9 +72,9 @@ function plugin_libresign_install() {
             'username' => null,
             'password' => null,
             'default_display_name' => 'firstname',
-            'default_filename' => __('Accept'),
-            'default_request_comment' => __('Validate GLPI Ticket'),
-            'default_accept_comment' => __('Digitally signed on LibreSign'),
+            'default_filename' => t_libresign('Accept'),
+            'default_request_comment' => t_libresign('Validate GLPI Ticket'),
+            'default_accept_comment' => t_libresign('Digitally signed on LibreSign'),
             'system_user_id' => 0,
             'date_mod' => null
          ],
