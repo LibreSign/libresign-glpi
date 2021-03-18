@@ -123,3 +123,7 @@ function plugin_libresign_check_prerequisites() {
 function plugin_libresign_check_config($verbose = false) {
    return true;
 }
+
+function t_libresign($str) {
+   return __($str, 'libresign');
+}

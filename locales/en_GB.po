@@ -1,0 +1,121 @@
+# English translations for libresign package.
+# Copyright (C) 2021 THE libresign'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the libresign package.
+# Automatically generated, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libresign 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/libresign/libresign-glpi/issues\n"
+"POT-Creation-Date: 2021-03-18 12:46+0000\n"
+"PO-Revision-Date: 2021-03-18 12:46+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: hook.php:75 inc/hook.class.php:158
+msgid "Accept"
+msgstr "Accept"
+
+#: hook.php:76
+msgid "Validate GLPI Ticket"
+msgstr "Validate GLPI Ticket"
+
+#: hook.php:77
+msgid "Digitally signed on LibreSign"
+msgstr "Digitally signed on LibreSign"
+
+#: inc/config.class.php:30
+msgid "Invalid settings"
+msgstr "Invalid settings"
+
+#: inc/config.class.php:75
+msgid "Libresign"
+msgstr "Libresign"
+
+#: inc/config.class.php:88
+msgid "URL of the API"
+msgstr "URL of the API"
+
+#: inc/config.class.php:93
+msgid "Username"
+msgstr "Username"
+
+#: inc/config.class.php:98
+msgid "Password"
+msgstr "Password"
+
+#: inc/config.class.php:103
+msgid "Default display name field"
+msgstr "Default display name field"
+
+#: inc/config.class.php:108
+msgid "Default filename to sign"
+msgstr "Default filename to sign"
+
+#: inc/config.class.php:113
+msgid "Comment sent to the signer of a document.."
+msgstr "Comment sent to the signer of a document.."
+
+#: inc/config.class.php:118
+msgid "Comment used when a document is signed."
+msgstr "Comment used when a document is signed."
+
+#: inc/config.class.php:123
+msgid "User ID that will be used to attach the signed file to the ticket."
+msgstr "User ID that will be used to attach the signed file to the ticket."
+
+#: inc/hook.class.php:15 inc/hook.class.php:73
+msgid "No signer found"
+msgstr "No signer found"
+
+#: inc/hook.class.php:36
+#, php-format
+msgid "Failure on send update sign in LibreSign. Error: %s."
+msgstr "Failure on send update sign in LibreSign. Error: %s."
+
+#: inc/hook.class.php:82
+#, php-format
+msgid "Failure on send delete sign in LibreSign. Error: %s."
+msgstr "Failure on send delete sign in LibreSign. Error: %s."
+
+#: inc/hook.class.php:176
+#, php-format
+msgid ""
+"File already signed by %s, impossible to add another subscriber. Delete all "
+"signers, the signed file and request new signatures."
+msgstr ""
+"File already signed by %s, impossible to add another subscriber. Delete all "
+"signers, the signed file and request new signatures."
+
+#: inc/hook.class.php:182
+#, php-format
+msgid "Signature already requested for %s"
+msgstr "Signature already requested for %s"
+
+#: inc/hook.class.php:201
+#, php-format
+msgid "Failure on send file to sign in LibreSign. Error: %s."
+msgstr "Failure on send file to sign in LibreSign. Error: %s."
+
+#: inc/hook.class.php:216
+#, php-format
+msgid ""
+"The selected user (%s) has no valid email address. The request has not been "
+"created."
+msgstr ""
+"The selected user (%s) has no valid email address. The request has not been "
+"created."
+
+#: inc/hook.class.php:228
+#, php-format
+msgid ""
+"The selected user (%s) has no valid %s. The request has not been created, "
+"without %s."
+msgstr ""
+"The selected user (%s) has no valid %s. The request has not been created, "
+"without %s."
