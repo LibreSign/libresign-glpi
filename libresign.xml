@@ -13,10 +13,10 @@
          <pt>Faça a validação dos tickets utilizando fluxo de assinatura do LibreSign. Os tickets serão aprovados após serem assinados digitalmente no LibreSign.</pt>
       </long>
    </description>
-   <homepage>https://github.com/LyseonTech/libresign-glpi</homepage>
-   <download>https://github.com/LyseonTech/libresign-glpi/releases</download>
-   <issues>https://github.com/LyseonTech/libresign-glpi/issues</issues>
-   <readme>https://github.com/LyseonTech/libresign-glpi/blob/master/README.md</readme>
+   <homepage>https://github.com/libresign/libresign-glpi</homepage>
+   <download>https://github.com/libresign/libresign-glpi/releases</download>
+   <issues>https://github.com/libresign/libresign-glpi/issues</issues>
+   <readme>https://github.com/libresign/libresign-glpi/blob/master/README.md</readme>
    <authors>
       <author>LyseonTech</author>
    </authors>
