@@ -2,7 +2,7 @@
    <name>LibreSign</name>
    <key>libresign</key>
    <state>beta</state>
-   <logo>https://raw.githubusercontent.com/LyseonTech/libresign-glpi/master/docs/logo.png</logo>
+   <logo>https://raw.githubusercontent.com/libresign/libresign-glpi/master/docs/logo.png</logo>
    <description>
       <short>
          <en>LibreSign GLPI plugin.</en>
