@@ -68,7 +68,7 @@ function plugin_libresign_install() {
       $DB->insertOrDie(
          'glpi_plugin_libresign_configs', [
             'id' => 1,
-            'nextcloud_url' => '$DOMAIN/apps/libresign/api/0.1/webhook/register',
+            'nextcloud_url' => '$DOMAIN/apps/libresign/api/0.1/sign/register',
             'username' => null,
             'password' => null,
             'default_display_name' => 'firstname',
