@@ -1,6 +1,6 @@
 # Install
 
-* Download latest release of plugin
+* Download [latest release of plugin](https://github.com/LibreSign/libresign-glpi/releases)
 * Extract in plugin directory
 * Go to `Setup` > `Plugin`
 
