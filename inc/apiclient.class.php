@@ -33,6 +33,7 @@ class LibresignAPIClient extends APIRest
             return;
         }
         $signer = $iterator->next();
+        $filename = basename($filename);
 
         $doc = new Document();
         $data = [
@@ -59,7 +60,19 @@ class LibresignAPIClient extends APIRest
         $data['sha1sum'] = sha1_file($uploadDir . $response['file'][0]->name);
         $doc->add($data);
 
+        $this->markRequestAsSigned($uuid);
         $this->saveValidation();
+    }
+
+    private function markRequestAsSigned(string $uuid)
+    {
+        global $DB;
+
+        $DB->update('glpi_plugin_libresign_files', [
+            'response_date' => date('Y-m-d H:i:s')
+        ], [
+            'file_uuid' => $uuid
+        ]);
     }
 
     private function saveValidation()
@@ -80,25 +93,20 @@ class LibresignAPIClient extends APIRest
     private function getSigners($uuid)
     {
         global $DB;
-        $this->iterator = $DB->request([
-            'SELECT' => [
-                'file.ticket_id',
-                'file.user_id',
-                TicketValidation::getTable() . '.id AS validation_id'
-            ],
-            'FROM' => 'glpi_plugin_libresign_files AS file',
-            'INNER JOIN'   => [
-                TicketValidation::getTable() => [
-                    'ON' => [
-                        'file' => 'user_id',
-                        TicketValidation::getTable() => 'users_id_validate'
-                    ]
-                ]
-            ],
-            'WHERE' => [
-                'file.file_uuid' => $uuid
-            ]
-        ]);
+        $validationTable = TicketValidation::getTable();
+        $this->iterator = $DB->request(sprintf(
+            "SELECT file.ticket_id, file.user_id, %s.id AS validation_id
+            FROM glpi_plugin_libresign_files AS file
+            INNER JOIN %s
+                ON %s.users_id_validate = file.user_id
+                AND %s.tickets_id = file.ticket_id
+            WHERE file.file_uuid = '%s'",
+            $validationTable,
+            $validationTable,
+            $validationTable,
+            $validationTable,
+            $DB->escape($uuid)
+        ));
         if (!count($this->iterator)) {
             $this->returnError('Invalid UUID');
             return;

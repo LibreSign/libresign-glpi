@@ -163,7 +163,7 @@ class PluginLibresignHook extends CommonDBTM
                         'description' => $ticket->input['comment_submission'] ?: $config->fields['default_request_comment']
                     ]
                 ],
-                'callback' => Plugin::getWebDir('libresign', true, true) . '/front/apirest.php'
+                'callback' => self::getCallbackUrl($config)
             ];
             $iterator = self::getSignRequests([
                 'ticket_id' => $ticket->input['tickets_id']
@@ -253,6 +253,16 @@ class PluginLibresignHook extends CommonDBTM
         return $json->data->uuid;
     }
 
+    private static function getCallbackUrl(PluginLibresignConfig $config)
+    {
+        $callback = Plugin::getWebDir('libresign', true, true) . '/front/apirest.php';
+        $token = $config->fields['callback_token'] ?? '';
+        if ($token === '') {
+            throw new Exception(t_libresign('The callback token is empty. Reinstall or re-save the plugin configuration.'));
+        }
+        return $callback . '?token=' . rawurlencode($token);
+    }
+
     private static function insertRelation(string $uuid, TicketValidation $ticket)
     {
         global $DB;
@@ -267,16 +277,25 @@ class PluginLibresignHook extends CommonDBTM
     private static function deleteRelation(string $uuid, TicketValidation $ticket)
     {
         global $DB;
+
+        $userId = $ticket->input['users_id_validate'] ?? $ticket->fields['users_id_validate'] ?? null;
+        $ticketId = $ticket->input['tickets_id'] ?? $ticket->fields['tickets_id'] ?? null;
+
         $DB->delete('glpi_plugin_libresign_files', [
             'file_uuid' => $uuid,
-            'user_id' => $ticket->input['users_id_validate'],
-            'ticket_id' => $ticket->input['tickets_id']
+            'user_id' => $userId,
+            'ticket_id' => $ticketId
         ]);
     }
 
     private static function getPdf(TicketValidation $ticketValidation)
     {
         global $PLUGIN_HOOKS;
+
+        if (!isset($PLUGIN_HOOKS['plugin_pdf']['Ticket'])) {
+            throw new Exception(t_libresign('The GLPI PDF plugin is required to generate the document to sign.'));
+        }
+
         $ticket = new Ticket();
         $pdf = new $PLUGIN_HOOKS['plugin_pdf']['Ticket']($ticket);
         return $pdf->generatePDF([$ticketValidation->input['tickets_id']], ['Ticket$main'], 0, false);

@@ -28,6 +28,13 @@
 
 define('PLUGIN_LIBRESIGN_VERSION', '0.0.1');
 
+use Glpi\Http\Firewall;
+use Glpi\Http\SessionManager;
+
+function plugin_libresign_boot() {
+   SessionManager::registerPluginStatelessPath('libresign', '#^/front/apirest\.php$#');
+}
+
 /**
  * Init hooks of the plugin.
  * REQUIRED
@@ -38,18 +45,12 @@ function plugin_init_libresign() {
    global $PLUGIN_HOOKS;
 
    $PLUGIN_HOOKS['csrf_compliant']['libresign'] = true;
+   Firewall::addPluginStrategyForLegacyScripts('libresign', '#^/front/apirest\.php$#', Firewall::STRATEGY_NO_CHECK);
 
    Plugin::registerClass('PluginLibresignConfig', ['addtabon' => 'Config']);
    $PLUGIN_HOOKS['config_page']['libresign'] = 'front/config.form.php';
 
    include_once(Plugin::getPhpDir('libresign')."/inc/config.class.php");
-
-   $plugin = new Plugin();
-   if ($plugin->isActivated("datainjection")) {
-      $PLUGIN_HOOKS['menu_entry']['libresign'] = 'front/preference.form.php';
-   } elseif ($plugin->isActivated("geststock")) {
-      $PLUGIN_HOOKS['menu_entry']['libresign'] = 'front/preference.form.php';
-   }
 
    $PLUGIN_HOOKS['pre_item_add']['libresign'] = [
       'TicketValidation' => [
@@ -89,8 +90,11 @@ function plugin_version_libresign() {
       'homepage'       => 'https://librecode.coop',
       'requirements'   => [
          'glpi' => [
-            'min' => '9.2',
-            'max' => '9.6'
+            'min' => '11.0.7',
+            'max' => '11.1.0'
+         ],
+         'php' => [
+            'min' => '8.2'
          ]
       ]
    ];
@@ -103,11 +107,20 @@ function plugin_version_libresign() {
  * @return boolean
  */
 function plugin_libresign_check_prerequisites() {
+   $plugin = new Plugin();
 
    //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
    $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-   if (version_compare($version, '9.2', '<')) {
-      echo "This plugin requires GLPI >= 9.2";
+   if (version_compare($version, '11.0.7', '<') || version_compare($version, '11.1.0', '>=')) {
+      echo "This plugin requires GLPI >= 11.0.7 and < 11.1.0";
+      return false;
+   }
+   if (version_compare(PHP_VERSION, '8.2', '<')) {
+      echo "This plugin requires PHP >= 8.2";
+      return false;
+   }
+   if (!$plugin->isInstalled('pdf') || !$plugin->isActivated('pdf')) {
+      echo "This plugin requires the GLPI PDF plugin to be installed and enabled";
       return false;
    }
    return true;

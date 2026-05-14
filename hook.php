@@ -45,7 +45,9 @@ function plugin_libresign_install() {
                ENGINE=InnoDB
                DEFAULT CHARSET=utf8
                COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, $DB->error());
+      if ($DB->doQuery($query) === false) {
+         throw new RuntimeException($DB->error());
+      }
    }
 
    if (!$DB->tableExists('glpi_plugin_libresign_configs')) {
@@ -54,6 +56,7 @@ function plugin_libresign_install() {
                   `nextcloud_url`  VARCHAR(255) NULL,
                   `username`  VARCHAR(255) NULL,
                   `password`  VARCHAR(255) NULL,
+                  `callback_token`  VARCHAR(64) NULL,
                   `default_display_name`  VARCHAR(255) NULL,
                   `default_filename`  VARCHAR(255) NULL,
                   `default_request_comment`  TEXT NULL,
@@ -62,8 +65,11 @@ function plugin_libresign_install() {
                   `date_mod` datetime default NULL,
                   PRIMARY KEY  (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, 'Error in creating glpi_plugin_libresign_configs'.
-                              "<br>".$DB->error());
+      if ($DB->doQuery($query) === false) {
+         throw new RuntimeException(
+            'Error in creating glpi_plugin_libresign_configs<br>' . $DB->error()
+         );
+      }
 
       $DB->insertOrDie(
          'glpi_plugin_libresign_configs', [
@@ -71,6 +77,7 @@ function plugin_libresign_install() {
             'nextcloud_url' => '$DOMAIN/apps/libresign/api/0.1/sign/register',
             'username' => null,
             'password' => null,
+            'callback_token' => bin2hex(random_bytes(32)),
             'default_display_name' => 'firstname',
             'default_filename' => t_libresign('Accept'),
             'default_request_comment' => t_libresign('Validate GLPI Ticket'),
@@ -80,6 +87,20 @@ function plugin_libresign_install() {
          ],
          'Error during update glpi_plugin_pdf_configs<br>' . $DB->error()
       );
+   } elseif (!$DB->fieldExists('glpi_plugin_libresign_configs', 'callback_token')) {
+      $query = "ALTER TABLE `glpi_plugin_libresign_configs`
+                  ADD COLUMN `callback_token` VARCHAR(64) NULL
+                  AFTER `password`";
+      if ($DB->doQuery($query) === false) {
+         throw new RuntimeException(
+            'Error while adding callback_token to glpi_plugin_libresign_configs<br>' . $DB->error()
+         );
+      }
+      $DB->update('glpi_plugin_libresign_configs', [
+         'callback_token' => bin2hex(random_bytes(32))
+      ], [
+         'id' => 1
+      ]);
    }
    return true;
 }
@@ -94,11 +115,15 @@ function plugin_libresign_uninstall() {
 
    if ($DB->tableExists("glpi_plugin_libresign_files")) {
       $query = "DROP TABLE `glpi_plugin_libresign_files`";
-      $DB->query($query) or die("error deleting glpi_plugin_libresign_files");
+      if ($DB->doQuery($query) === false) {
+         throw new RuntimeException("error deleting glpi_plugin_libresign_files");
+      }
    }
    if ($DB->tableExists('glpi_plugin_libresign_configs')) {
       $query = "DROP TABLE `glpi_plugin_libresign_configs`";
-      $DB->query($query) or die("error deleting glpi_plugin_libresign_configs");
+      if ($DB->doQuery($query) === false) {
+         throw new RuntimeException("error deleting glpi_plugin_libresign_configs");
+      }
    }
 
    return true;
